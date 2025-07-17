@@ -1,0 +1,44 @@
+---
+title: "STA 4320 CHAP 2"
+author: "He Jiang"
+date: "Aug 2024"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this class, we follow the textbook:
+Introduction to Statistical Learning (2023 June)
+
+
+## Sec 2.1
+
+Advertising dataset
+```{r}
+fpath = getwd()
+Advertising = read.csv(paste0(fpath, "/Advertising.csv"))
+head(Advertising)
+```
+
+Pairwise scatterplot of sales vs TV
+```{r}
+# pairs(Advertising) plots all pairwise scatterplots
+
+# the following only plots pairs that we need
+pairs(~sales + TV, data = Advertising)
+
+# alternatively, we can manually plot the scatterplot
+plot(Advertising$TV, Advertising$sales,
+     main = "Scatterplot of Sales vs TV Spendings",
+     pch = 16,
+     xlab = "TV Spendings (in thousand dollars)",
+     ylab = "Sales (in thousand units)")
+```
+
+
+
+
