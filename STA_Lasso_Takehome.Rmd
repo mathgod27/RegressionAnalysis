@@ -1,0 +1,80 @@
+---
+title: "STA 4320 Takehome Midterm"
+author: "Mary Robinson"
+date: "12/10/2024"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Part a
+
+Loading Dataset
+```{r}
+# loading required package: ISLR2
+require(ISLR2)
+require(glmnet)
+any( is.na(Credit) ) # if false, then no na terms
+# [1] FALSE
+```
+
+### Part b
+
+Create the X matrix and the y vector.
+```{r}
+X = model.matrix(Balance ~ ., Credit)[, -1]
+y = Credit$Balance
+```
+
+### Part c
+
+Training testing split.
+```{r}
+n = nrow(X) # sample size
+set.seed(1)
+train = sample(1:n, n/2, replace = FALSE)
+test = (-train)
+# test = (1:400)[-train]
+y_test = y[test]
+```
+
+
+### Part d
+
+Fitting LASSO regression and conduct cross validation.
+```{r}
+grid = 10^seq(10, -2, length = 100)
+lasso_mod = glmnet(X[train, ], y[train], alpha = 1, lambda = grid)
+cv_out = cv.glmnet(X[train, ], y[train], alpha = 1)
+plot(cv_out)
+```
+
+### Part e
+
+The mean squared error on the testing set.
+```{r}
+best_lambda = cv_out$lambda.min
+lasso_pred = predict(lasso_mod, s = best_lambda, newx = X[test, ])
+mean( (lasso_pred - y_test)^2 )
+
+# Auto
+reg = lm(mpg ~ horsepower + acceleration + cylinders + displacement, dat = Auto)
+summary(reg)
+anova(reg)
+```
+
+### Part f
+
+Best Lambda fit, lasso the whole data set
+```{r}
+thankyouprofessor = glmnet(X, y, alpha = 1, lambda = grid)
+lasso_coef = predict(thankyouprofessor, type = "coefficients", s = best_lambda)[1:12, ]
+round(lasso_coef, 4)
+```
+
+Thank you for a wonderful semester! I really enjoyed learning the material and how you structured the class!

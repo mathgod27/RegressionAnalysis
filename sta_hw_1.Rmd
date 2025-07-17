@@ -1,0 +1,93 @@
+---
+title: "STA 4320 HW 1"
+author: "Mary Robinson"
+date: "September 18 2024"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1
+
+### Part a
+
+Loading Data and Finding the First Six Rows
+```{r}
+# loading data
+library(ISLR2)
+require(ISLR2)
+```
+
+You can insert more R code chunks 
+
+### Part b
+
+Regression Output
+```{r}
+y = Auto$mpg
+x = Auto$horsepower
+reg = lm(y ~ x)
+summary(reg)
+#could also do: attach(Auto) then summary(lm(mpg ~ horsepower))
+```
+Answers with words can be typed directly without a code chunk.
+
+### Part c
+```{r}
+plot(x, y,
+     mail = "MPG and Horsepower",
+     pch = 16,
+     xlab = "Horsepower",
+     ylab = "MPG"
+)
+#can also use Auto$Mpg or horsepower
+
+abline(reg,
+       col = "purple",
+       lwd = 2)
+legend("topright",
+       legend = "Regression Line",
+       fill = "purple")
+```
+
+### Part d
+
+Yes. With the intercept already in the model:
+
+H0: beta_1 vs H1: beta_1 < 0
+
+The pvalue is less than e^-16. So we reject H0 at the 0.05 level.
+#pvalue comes from our data t value and we see if it is less than our t value (see pic for details)
+
+### Part e
+
+Yes this is the f test. We can look at the given F-statistic to compare our pvalue with it. 
+
+H0:beta_0 = beta_1 = 0 vs (at least one of the beta_0 or beta_1 is nonzero)
+
+The p value is less than 2.2e^-16 so we reject H0 at the 0.05 level.
+
+### part f
+
+```{r}
+newx = data.frame(x = 98)
+
+#simple point
+round(as.numeric(predict(reg, newx)), 4)
+
+#confidence interval
+round(predict(reg, newx, interval = "confidence", level = 0.95)[-1], 4)
+
+#prediction interval
+round(predict(reg, newx, interval = "prediction", level = 0.95)[-1], 4)
+```
+
+
+
+
+
+

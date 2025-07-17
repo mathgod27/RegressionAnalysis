@@ -1,0 +1,124 @@
+---
+title: "STA 4320 HW 3"
+author: "Mary Robinson"
+date: "9/25/24"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1
+
+### Part a
+
+Loading data and finding the first six rows
+```{r}
+# install packages
+require(ISLR2)
+
+dat = Auto[1:5]
+head(dat)
+```
+
+
+### Part b
+Regression Output
+```{r}
+# reg = lm(mpg ~ cylinders + displacement + horsepower + weight, data = dat)
+#or
+reg = lm(mpg ~ ., data = dat)
+summary(reg)
+#percentage of variation in Y is Multiple R-squared value
+```
+
+
+### Part c
+Prediction Interval
+#for this one we are looking for a SINGLE point (car), so prediction interval instead of confidence interval
+```{r}
+pred_int = predict(reg, data.frame(cylinders = 6, displacement = 275, horsepower = 125, weight = 3500, interval = "prediction", level = 0.95))
+pred_int_rounded = round(as.numeric(pred_int[2:3]))
+
+paste("The prediction interval is ", paste(pred_int_rounded, collapse = " "))
+```
+
+### Part d
+H0: beta_1 = beta_2 = beta_3 = beta_4 = 0
+
+H1: beta_j is nonzero for at least one of j= 1,2,3,4
+
+The p value to the F Test less than 2.2e^-16. So we reject H0 at the 0.05 level.
+
+
+### Part e
+
+with the intercept, cylinder, horsepower, and weight already in the model
+
+H0: beta_2 = 0
+
+H1: beta_2 is not equal to 0
+
+(beta_2 is the slope for displacement)
+
+The p value for the T test is 0.9877, way larger than 0.05, so we fail to reject H0.
+
+Thus with the intercept, cylinder, horsepower, and weight already in the model, there is no significant evidence that we should also include displacement.
+
+
+
+
+
+Once completed, you can compile into pdf if you have LaTeX, or compile to html and then print that html file into a pdf file if you do not have LaTeX. 
+
+### Part f
+```{r}
+round(cor(dat), 4) 
+```
+
+
+### Part g
+
+full model
+
+```{r}
+y= Auto$mpg
+n=392
+```
+
+RSE= sqrt(RSS / (n-p-1))
+RSE: residual standard error
+
+4.242 = sqrt(RSS / (392-4-1))
+RSS= 6963.896
+
+Sub model (with onlu horsepower and weight and intercept)
+```{r}
+reg_0 = lm(mpg ~ horsepower + weight , data= dat)
+RSS_0 = sum( ( y-predict(reg_0, data.frame(dat[,c(4,5)])) )^2)
+```
+
+compute the test statistic
+
+F_0 = ( (RSS_0 - RSS)/ q) / (RSS/ (n-p-1))
+F_0 - (6993.845- 6963.896) / 2) / (6963.896 / (392-4-1))
+F_0 = 0.8322
+
+Compute the p value
+```{r}
+p_val = 1- pf(0.8322, 2, 387 )
+p_val
+# degrees of freedoms: q=2, n-p-1=392-4-1= 387
+```
+
+Make a conclusion 
+we fail to reject H0 at the 0.01 level as the pvalue is way larger than 0.01
+
+Therefore, with the intercept, horsepower, and wreight already in the model,
+there is insufficient ecidence that we should include cylinders and displacement.
+
+
+
